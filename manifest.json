@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Playlist Shortcut",
+  "version": "1.0",
+  "description": "Add custom keyboard shortcuts for YouTube playlist actions",
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "commands": {
+    "toggle-playlist": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S",
+        "mac": "Command+Shift+S"
+      },
+      "description": "Toggle Download playlist"
+    }
+  }
+}
