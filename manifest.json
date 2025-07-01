@@ -1,22 +1,40 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Playlist Shortcut",
+  "name": "Multi-Tool Extension",
   "version": "1.0",
-  "description": "Add custom keyboard shortcuts for YouTube playlist actions",
-  "permissions": ["activeTab"],
+  "description": "A collection of useful browser tools and shortcuts",
+  "permissions": ["activeTab", "tabs"],
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
-      "js": ["content.js"]
+      "js": ["tools/youtube-playlist/content.js"]
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["tools/youtube-search/content.js"]
     }
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "commands": {
     "toggle-playlist": {
       "suggested_key": {
         "default": "Ctrl+Shift+S",
         "mac": "Command+Shift+S"
       },
-      "description": "Toggle Download playlist"
+      "description": "Toggle Download playlist on YouTube"
+    },
+    "search-youtube": {
+      "suggested_key": {
+        "default": "Ctrl+Y",
+        "mac": "Command+Y"
+      },
+      "description": "Search selected text on YouTube"
     }
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Multi-Tool Extension"
   }
 }
