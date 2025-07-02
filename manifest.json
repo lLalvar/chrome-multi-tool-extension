@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Multi-Tool Extension",
-  "version": "1.0",
+  "version": "1.1",
   "description": "A collection of useful browser tools and shortcuts",
-  "permissions": ["activeTab", "tabs"],
+  "permissions": ["activeTab", "tabs", "storage"],
   "content_scripts": [
     {
       "matches": ["*://*.youtube.com/*"],
@@ -23,7 +23,7 @@
         "default": "Ctrl+Shift+S",
         "mac": "Command+Shift+S"
       },
-      "description": "Toggle Download playlist on YouTube"
+      "description": "Toggle playlist on YouTube"
     },
     "search-youtube": {
       "suggested_key": {
@@ -35,6 +35,13 @@
   },
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "Multi-Tool Extension"
-  }
+    "default_title": "Multi-Tool Extension",
+    "default_icon": {
+      "32": "icons/icon32.png"
+    }
+  },
+  "icons": {
+    "32": "icons/icon32.png"
+  },
+  "options_page": "options/options.html"
 }

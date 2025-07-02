@@ -30,6 +30,7 @@
         margin-bottom: 12px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         transition: background 0.3s ease;
+        cursor: pointer;
       }
 
       .tool:hover {
@@ -64,6 +65,28 @@
         display: inline-block;
       }
 
+      .settings-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+      }
+
+      .settings-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+      }
+
       .footer {
         text-align: center;
         margin-top: 15px;
@@ -90,7 +113,7 @@
         YouTube Playlist
       </div>
       <div class="tool-description">
-        Toggle "Download" playlist for current YouTube video
+        Toggle your configured playlist for current YouTube video
       </div>
       <div class="tool-shortcut">Ctrl+Shift+S</div>
     </div>
@@ -104,9 +127,13 @@
       <div class="tool-shortcut">Ctrl+Y</div>
     </div>
 
+    <button class="settings-button" id="settingsButton">
+      ⚙️ Extension Settings
+    </button>
+
     <div class="status" id="status">Ready to use! Use the shortcuts above.</div>
 
-    <div class="footer">v1.0 | 2 tools available</div>
+    <div class="footer">v1.1 | 2 tools available</div>
 
     <script src="popup.js"></script>
   </body>

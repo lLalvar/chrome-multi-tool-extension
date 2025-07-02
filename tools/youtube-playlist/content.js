@@ -1,5 +1,24 @@
 // YouTube Playlist Shortcut Tool
-// Handles toggling the "Download" playlist for YouTube videos
+// Handles toggling a configurable playlist for YouTube videos
+
+let currentPlaylistName = 'Download' // Default value
+
+// Load playlist name from storage when script loads
+chrome.storage.sync.get(
+  {
+    playlistName: 'Download',
+  },
+  function (items) {
+    currentPlaylistName = items.playlistName
+  }
+)
+
+// Listen for storage changes to update playlist name in real-time
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  if (namespace === 'sync' && changes.playlistName) {
+    currentPlaylistName = changes.playlistName.newValue
+  }
+})
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -12,7 +31,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 })
 
-// Function to save directly to Download playlist
+// Function to save directly to the configured playlist
 function togglePlaylistCheckbox() {
   // Check if the save dialog is already open
   const dialogOpen = document.querySelector(
@@ -20,7 +39,7 @@ function togglePlaylistCheckbox() {
   )
 
   if (dialogOpen) {
-    // Dialog is open, just toggle the Download checkbox
+    // Dialog is open, just toggle the configured playlist checkbox
     clickPlaylistCheckbox()
   } else {
     // Dialog is not open, open it and wait for it to fully load
@@ -56,9 +75,9 @@ function waitForPlaylistsToLoad(callback, attempts = 0, maxAttempts = 10) {
     const playlists = document.querySelectorAll(
       'ytd-playlist-add-to-option-renderer'
     )
-    const downloadPlaylist = findDownloadPlaylist()
+    const targetPlaylist = findTargetPlaylist()
 
-    if (downloadPlaylist || playlists.length > 0) {
+    if (targetPlaylist || playlists.length > 0) {
       // Found playlists, execute callback
       callback()
     } else if (attempts < maxAttempts) {
@@ -79,46 +98,58 @@ function waitForPlaylistsToLoad(callback, attempts = 0, maxAttempts = 10) {
   setTimeout(checkForPlaylists, 300)
 }
 
-// Helper function to find the Download playlist
-function findDownloadPlaylist() {
+// Helper function to find the target playlist
+function findTargetPlaylist() {
   const checkboxes = document.querySelectorAll(
     'ytd-playlist-add-to-option-renderer'
   )
 
   for (const checkbox of checkboxes) {
     const label = checkbox.querySelector('#label, yt-formatted-string')
-    if (label && label.textContent.trim().toLowerCase().includes('download')) {
+    if (
+      label &&
+      label.textContent
+        .trim()
+        .toLowerCase()
+        .includes(currentPlaylistName.toLowerCase())
+    ) {
       return checkbox.querySelector('tp-yt-paper-checkbox')
     }
   }
 
-  // Fallback: look for any checkbox with "Download" in aria-label or title
+  // Fallback: look for any checkbox with the playlist name in aria-label or title
   return document.querySelector(
-    'tp-yt-paper-checkbox[aria-label*="Download"], ytd-playlist-add-to-option-renderer:has([title*="Download"]) tp-yt-paper-checkbox'
+    `tp-yt-paper-checkbox[aria-label*="${currentPlaylistName}"], ytd-playlist-add-to-option-renderer:has([title*="${currentPlaylistName}"]) tp-yt-paper-checkbox`
   )
 }
 
 function clickPlaylistCheckbox() {
-  const downloadCheckbox = findDownloadPlaylist()
+  const targetCheckbox = findTargetPlaylist()
 
-  if (downloadCheckbox) {
-    downloadCheckbox.click()
-    showNotification('Download playlist toggled!', 'youtube-playlist')
+  if (targetCheckbox) {
+    targetCheckbox.click()
+    showNotification(
+      `"${currentPlaylistName}" playlist toggled!`,
+      'youtube-playlist'
+    )
   } else {
     showNotification(
-      'Download playlist not found. Checking again...',
+      `"${currentPlaylistName}" playlist not found. Checking again...`,
       'youtube-playlist'
     )
 
     // Try one more time after a short delay
     setTimeout(() => {
-      const retryCheckbox = findDownloadPlaylist()
+      const retryCheckbox = findTargetPlaylist()
       if (retryCheckbox) {
         retryCheckbox.click()
-        showNotification('Download playlist toggled!', 'youtube-playlist')
+        showNotification(
+          `"${currentPlaylistName}" playlist toggled!`,
+          'youtube-playlist'
+        )
       } else {
         showNotification(
-          'Download playlist still not found. Make sure it exists in your playlists.',
+          `"${currentPlaylistName}" playlist still not found. Make sure it exists in your playlists or check your settings.`,
           'youtube-playlist'
         )
       }

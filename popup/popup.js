@@ -1,6 +1,7 @@
 // Popup script for Multi-Tool Extension
 document.addEventListener('DOMContentLoaded', function () {
   const statusElement = document.getElementById('status')
+  const settingsButton = document.getElementById('settingsButton')
 
   // Check if we're on a relevant page
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
@@ -18,6 +19,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
       statusElement.textContent = status
     }
+  })
+
+  // Settings button click handler
+  settingsButton.addEventListener('click', function () {
+    // Visual feedback
+    settingsButton.style.transform = 'translateY(0)'
+    setTimeout(() => {
+      settingsButton.style.transform = 'translateY(-1px)'
+    }, 100)
+
+    // Open options page
+    chrome.runtime.openOptionsPage()
   })
 
   // Add click handlers for tools (optional - they work via shortcuts)
